@@ -29,8 +29,8 @@ class UnionFind:
 
 inputData = []
 
-lines = [line.rstrip('\n') for line in sys.stdin]
-# lines = [line.rstrip('\n') for line in open('friendstestcases.txt')]
+# lines = [line.rstrip('\n') for line in sys.stdin]
+lines = [line.rstrip('\n') for line in open('friendstestcases.txt')]
 
 for line in lines:
     inputData.append(list((map(int, line.split(' ')))))
