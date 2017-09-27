@@ -1,15 +1,14 @@
 import sys
 
-
 currentLine = 2
 eq = True
-inputData = []
+inputData = list()
 lines = [line.rstrip('\n') for line in sys.stdin]
 
 def fulcrum():
     global currentLine
     global eq
-    inputData = list(map(int, lines[currentLine].split(' ')))
+    inputData = list(map(int, lines[currentLine].split()))
     left = inputData[0]
     right = inputData[2]
 

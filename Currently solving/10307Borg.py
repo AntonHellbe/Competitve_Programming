@@ -2,69 +2,66 @@ import sys
 from collections import deque
 from collections import defaultdict
 
+class UnionFind:
+    def __init__(self):
+        self.nodeMap = {}
+
+class Node:
+    def __init__(self, data, rank):
+        self.data = data
+        self.parent = 0
+        self.rank = rank
+
+
 class Graph:
-
     def __init__(self,vertices):
-        self.V= vertices #No. of vertices
-        self.graph = [] # default dictionary to store graph
+        self.V= vertices
+        self.graph = defaultdict(set)
 
-
-    # function to add an edge to graph
     def addEdge(self,u,v,w):
-        self.graph.append([u,v,w])
+        if u not in self.graph:
+            self.graph[u] = []
+            self.graph[u].append((w, v))
+        else:
+            self.graph[u].append((w, v))
 
-    # A utility function to find set of an element i
-    # (uses path compression technique)
-    def find(self, parent, i):
-        if parent[i] == i:
-            return i
-        return self.find(parent, parent[i])
+    def getEdges(self):
+        temp = []
+        for key in self.graph:
+            for pair in self.graph[key]:
+                temp.append([key, pair[1], pair[0]])
+        return temp
 
-    # A function that does union of two sets of x and y
-    # (uses union by rank)
-    def union(self, parent, rank, x, y):
-        xroot = self.find(parent, x)
-        yroot = self.find(parent, y)
 
-        # Attach smaller rank tree under root of high rank tree
-        # (Union by Rank)
-        if rank[xroot] < rank[yroot]:
-            parent[xroot] = yroot
-        elif rank[xroot] > rank[yroot]:
-            parent[yroot] = xroot
-        #If ranks are same, then make one as root and increment
-        # its rank by one
-        else :
-            parent[yroot] = xroot
-            rank[xroot] += 1
+def makeSet(data, rank, UnionFind):
+    node = Node(data, rank)
+    node.parent = node
+    UnionFind.nodeMap[data] = node
 
-    def KruskalMST(self):
-        i = 0
-        e = 0
-        result = []
-        self.graph = sorted(self.graph, key=lambda item: item[2])
-        parent = [] ; rank = []
+def union(data1, data2):
+    node1 = nodeMap[data1]
+    node2 = nodeMap[data2]
+    parent1 = findset(node1)
+    parent2 = findset(node2)
 
-        for node in range(self.V):
-            parent.append(node)
-            rank.append(0)
+    if(parent1.data == parent2.data):
+        return
 
-        while i < self.V - 1:
-            # print(i)
-            u,v,w = self.graph[i]
-            i = i + 1
-            x = self.find(parent, u)
-            y = self.find(parent, v)
-            if x != y:
-                e = e + 1
-                result.append([u, v, w])
-                self.union(parent, rank, x, y)
+    if(parent1.rank >= parent2.rank):
+        if(parent1.rank == parent2.rank):
+            parent1.rank += 1
+            parent2.parent = parent1
 
-        # print the contents of result[] to display the built MST
-        print("Following are the edges in the constructed MST")
-        for u,v,weight in result:
-            print("%d -- %d == %d" % (u,v,weight))
+        parent2.parent = parent1
+    else:
+        parent1.parent = parent2
 
+def findset(node):
+    node_parent = node.parent
+    if(node == node_parent):
+        return node_parent
+    node_parent = findset(node_parent.parent)
+    return node_parent
 
 
 def getWeight(startNode, toNodes):
@@ -76,16 +73,18 @@ def getWeight(startNode, toNodes):
     return distances
 
 
+def createMST(graph):
+    mst = []
+    edges = graph.getEdges()
+
+
+
 
 def bfs(start):
     q = deque()
-
-    for row in weights:
-        for weight in row:
-            weight = 99999
-
     weights[start[0]][start[1]] = 0
     q.append(start)
+
     while len(q) != 0:
         start = q.pop()
         # print(start[0], start[1])
@@ -110,20 +109,19 @@ def bfs(start):
                 q.append((start[0], start[1] - 1))
 
 
+def clearWeight(x, y):
+    return [[999999 for i in range(x)] for j in range(y)]
 
 lines = [line.rstrip('\n') for line in sys.stdin]
-
+weights = 0
 testcases = int(lines[0])
 aliens = []
 start = 0
 lineCount = 1
+
 alientCount = 1
-
-
-
-
-
 matrix = []
+weights = 0
 
 
 for i in range(1):
@@ -131,8 +129,7 @@ for i in range(1):
     data = list(map(int, lines[lineCount].split()))
     x = data[0]
     y = data[1]
-
-    weights = [[999999 for i in range(x)] for j in range(y)]
+    weights = clearWeight(x, y)
     lineCount += 1
 
     for j in range(0, y):
@@ -151,25 +148,18 @@ for i in range(1):
         lineCount += 1
 
     edges = []
-
     edges.extend(getWeight(start, aliens))
+    weights = clearWeight(x, y)
+
     while(len(aliens) >= 2):
         temp = aliens[:1][0]
         aliens = aliens[1:]
         edges.extend(getWeight(temp, aliens))
+        weights = clearWeight(x, y)
 
-    # print(len(edges))
 
-    graph = Graph(len(edges))
+    graph = Graph(alientCount)
 
     for edge in edges:
         graph.addEdge(edge[0], edge[2], edge[1])
-    # print(len(graph.graph))
-    graph.KruskalMST()
-
-
-
-
-
-for weight in weights:
-    print(weight)
+        graph.addEdge(edge[2], edge[0], edge[1])
