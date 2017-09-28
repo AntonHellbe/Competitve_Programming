@@ -1,10 +1,23 @@
 import sys
 from collections import deque
 from collections import defaultdict
+import time
+
+def timing(f):
+    def wrap(*args):
+        time1 = time.time()
+        ret = f(*args)
+        time2 = time.time()
+        print ('%s function took %0.3f ms' % (f.__name__, (time2-time1)*1000.0))
+        return ret
+    return wrap
 
 class UnionFind:
     def __init__(self):
         self.nodeMap = {}
+
+    def getKeys(self):
+        return list(self.nodeMap.keys())
 
 class Node:
     def __init__(self, data, rank):
@@ -16,21 +29,13 @@ class Node:
 class Graph:
     def __init__(self,vertices):
         self.V= vertices
-        self.graph = defaultdict(set)
+        self.graph = []
 
     def addEdge(self,u,v,w):
-        if u not in self.graph:
-            self.graph[u] = []
-            self.graph[u].append((w, v))
-        else:
-            self.graph[u].append((w, v))
+        self.graph.append([u, v, w])
 
     def getEdges(self):
-        temp = []
-        for key in self.graph:
-            for pair in self.graph[key]:
-                temp.append([key, pair[1], pair[0]])
-        return temp
+        return self.graph
 
 
 def makeSet(data, rank, UnionFind):
@@ -38,9 +43,9 @@ def makeSet(data, rank, UnionFind):
     node.parent = node
     UnionFind.nodeMap[data] = node
 
-def union(data1, data2):
-    node1 = nodeMap[data1]
-    node2 = nodeMap[data2]
+def union(UnionFind, data1, data2):
+    node1 = UnionFind.nodeMap[data1]
+    node2 = UnionFind.nodeMap[data2]
     parent1 = findset(node1)
     parent2 = findset(node2)
 
@@ -75,13 +80,23 @@ def getWeight(startNode, toNodes):
 
 def createMST(graph):
     mst = []
+    uf = UnionFind()
     edges = graph.getEdges()
+    for i in range(alientCount):
+        makeSet(i, 0, uf)
+    sortedEdges = sorted(edges, key= lambda item: item[1])
+    for edge in sortedEdges:
+        if not findset(uf.nodeMap[edge[0]]) == findset(uf.nodeMap[edge[2]]):
+            union(uf, edge[0], edge[2])
+            mst.append(edge[1])
+    return mst
 
 
 
-
+# @timing
 def bfs(start):
     q = deque()
+    # print(start[0], start[1])
     weights[start[0]][start[1]] = 0
     q.append(start)
 
@@ -115,17 +130,16 @@ def clearWeight(x, y):
 lines = [line.rstrip('\n') for line in sys.stdin]
 weights = 0
 testcases = int(lines[0])
-aliens = []
 start = 0
 lineCount = 1
-
 alientCount = 1
-matrix = []
-weights = 0
 
 
-for i in range(1):
 
+for i in range(testcases):
+    alientCount = 1
+    matrix = []
+    aliens = []
     data = list(map(int, lines[lineCount].split()))
     x = data[0]
     y = data[1]
@@ -147,19 +161,23 @@ for i in range(1):
 
         lineCount += 1
 
+    if(start == 0 or len(aliens) == 0):
+        print("0")
+        continue
     edges = []
+
     edges.extend(getWeight(start, aliens))
     weights = clearWeight(x, y)
-
     while(len(aliens) >= 2):
         temp = aliens[:1][0]
         aliens = aliens[1:]
         edges.extend(getWeight(temp, aliens))
         weights = clearWeight(x, y)
 
-
+    # print(edges)
     graph = Graph(alientCount)
-
     for edge in edges:
-        graph.addEdge(edge[0], edge[2], edge[1])
-        graph.addEdge(edge[2], edge[0], edge[1])
+        graph.addEdge(edge[0], edge[1], edge[2])
+
+    bestWay = sum(createMST(graph))
+    print(bestWay)
