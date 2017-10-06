@@ -2,6 +2,7 @@ import sys
 import heapq
 import time
 
+directions = {'LEFT':(0, -1), 'RIGHT':(0,1), 'UP':(-1, 0), 'DOWN':(1, 0)}
 
 def timing(f):
     def wrap(*args):
@@ -53,14 +54,14 @@ class Graph:
 
 
 
-def traverseMaze(x, y, aliens, start, lineCount):
+def traverseMaze(x, y, visited, aliens, start, lineCount):
     vertices = Vertices()
     alientCount = 1
     for i in range(y):
         temp = list(lines[lineCount])
         for j in range(len(temp)):
-            if(temp[j] != '#'):
-                vertices.addVertices(i, j)
+            if(temp[j] == '#'):
+                visited[i][j] = True
             if(temp[j] == 'S'):
                 start = (i, j)
             if(temp[j] == 'A'):
@@ -68,53 +69,8 @@ def traverseMaze(x, y, aliens, start, lineCount):
                 alientCount += 1
         lineCount += 1
 
-    lengt = vertices.length() - 1
-    graph = Graph(lengt)
 
-    for vertex in vertices.vertices:
-        if(vertices.find(vertex[0] + 1, vertex[1])):
-            graph.addEdge((vertex[0], vertex[1]), vertex[0] + 1, vertex[1], 1)
-        if(vertices.find(vertex[0] - 1, vertex[1])):
-            graph.addEdge((vertex[0], vertex[1]), vertex[0] - 1, vertex[1], 1)
-        if(vertices.find(vertex[0], vertex[1] + 1)):
-            graph.addEdge((vertex[0], vertex[1]), vertex[0], vertex[1] + 1, 1)
-        if(vertices.find(vertex[0], vertex[1] - 1)):
-            graph.addEdge((vertex[0], vertex[1]), vertex[0], vertex[1] - 1, 1)
-
-
-
-    return vertices, aliens, start, lineCount, graph
-
-
-def dijkstra(graph, vertices, source):
-    INF = 9999
-    dist = {x: INF for x in vertices.getVertices()}
-    dist[source] = 0
-    PQ = []
-
-    heapq.heappush(PQ, [dist[source], source])
-
-    while(PQ):
-        u = heapq.heappop(PQ)
-        u_dist = u[0]
-        u_id = u[1]
-        if u_dist == dist[u_id]:
-            for edge in graph.getEdgesById(u_id):
-                v_id = (edge[0], edge[1])
-                w = edge[2]
-                if(dist[u_id] + w < dist[v_id]):
-                    dist[v_id] = dist[u_id] + 1
-                    heapq.heappush(PQ, [dist[v_id], v_id])
-
-    return dist
-
-def getDistances(startNode, toNodes, graph, vertices):
-    dist = dijkstra(graph, vertices, startNode)
-    total = []
-    for node in toNodes:
-        total.append([startNode, dist[node], node])
-
-    return total
+    return vertices, aliens, start, lineCount, visited
 
 class UnionFind:
     def __init__(self):
@@ -160,7 +116,7 @@ def findset(node):
     node.parent = node_parent
     return node_parent
 
-
+# @timing
 def createMST(edges, temp, sizeofnodes):
     mst = []
     uf = UnionFind()
@@ -172,26 +128,62 @@ def createMST(edges, temp, sizeofnodes):
         if not findset(uf.nodeMap[edge[0]]) == findset(uf.nodeMap[edge[2]]):
             union(uf, edge[0], edge[2])
             mst.append(edge[1])
-            if(len(mst) == sizeofnodes):
+            if(len(mst) == sizeofnodes - 1):
                 break
     return mst
 
-
-
-lines = [line.rstrip('\n') for line in open('borgmazetestcases.txt')]
-# lines = [line.rstrip('\n') for line in sys.stdin]
+# lines = [line.rstrip('\n') for line in open('borgmazetestcases.txt')]
+lines = [line.rstrip('\n') for line in sys.stdin]
 weights = 0
 testcases = int(lines[0])
 lineCount = 1
 alientCount = 1
 
+def dijkstra(source, vertices, visited):
+    temp = [row[:] for row in visited]
+
+    INF = 9999
+    dist = {x: INF for x in vertices}
+    dist[source] = 0
+    PQ = []
+    row = 0
+    col = 0
+
+    heapq.heappush(PQ, [dist[source], source])
+
+    while(PQ):
+        u = heapq.heappop(PQ)
+        u_dist = u[0]
+        u_id = u[1]
+        if u_dist == dist[u_id]:
+            temp[u_id[0]][u_id[1]] = True
+            for direct in directions.values():
+                row = u_id[0] + direct[0]
+                col = u_id[1] + direct[1]
+                if(not temp[row][col]):
+                    newNode = (row, col)
+                    dist[newNode] = u_dist + 1
+                    temp[row][col] = True
+                    heapq.heappush(PQ, [dist[newNode], newNode])
+
+    return dist
+
+
+def getDistances(startNode, toNodes, visited):
+    dist = dijkstra(startNode, toNodes, visited)
+    total = []
+    for node in toNodes:
+        total.append([startNode, dist[node], node])
+
+    return total
+
 # @timing
-def findAll(aliens, graph, vertices):
+def findAll(aliens, visited):
     edges = []
     while(len(aliens) > 1):
         temp = aliens[:1][0]
         aliens = aliens[1:]
-        edges.extend(getDistances(temp, aliens, graph, vertices))
+        edges.extend(getDistances(temp, aliens, visited))
     return edges
 
 
@@ -202,25 +194,26 @@ for i in range(testcases):
     aliens = []
     start = 0
     graph = 0
+    visited = [[False for i in range(x)] for j in range(y)]
     lineCount += 1
 
-    vertices, aliens, start, lineCount, graph = traverseMaze(x, y, aliens, start, lineCount)
+    vertices, aliens, start, lineCount, visited = traverseMaze(x, y, visited, aliens, start, lineCount)
+    aliens.insert(0, start)
 
-    if(start == 0 or len(aliens) == 0):
+
+    if(start == 0 or len(aliens) == 1):
         print("0")
         continue
 
-    if(start != 0):
-        aliens.insert(0, start)
-
     edges = []
-    temp2 = []
-    temp2.extend(aliens)
-
-    edges = findAll(aliens, graph, vertices)
-
-
+    temp2 = aliens[:]
+    while(len(aliens) > 1):
+        temp = aliens[:1][0]
+        aliens = aliens[1:]
+        dist = dijkstra(temp, aliens, visited)
+        for alien in aliens:
+            edges.append([temp, dist[alien], alien])
 
     hello = createMST(edges, temp2, len(temp2))
-
+    #
     print(sum(hello))

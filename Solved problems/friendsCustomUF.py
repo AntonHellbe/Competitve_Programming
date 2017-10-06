@@ -76,10 +76,11 @@ for i in range(0, testcases[0]):
             myDict[parent.data] = [node1.data]
         else:
             myDict[parent.data].append(node1.data)
-
+    bigset = 0
     biggestGroup = 0
     for mySet in myDict.values():
         if(len(mySet) > biggestGroup):
             biggestGroup = len(mySet)
-
+            bigset = mySet
+    print(bigset)
     print(biggestGroup)
