@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Friends {
 
-    static HashMap<Integer, ArrayList<Vertex>> friendsGraph;
+    static HashMap<Integer, ArrayList<Integer>> friendsGraph;
     static HashMap<Integer, Vertex> visitedDict;
     static Scanner scan;
     static int longestSequence;
@@ -48,15 +48,15 @@ public class Friends {
 
 
         for (int i = 1; i < population + 1; i++) {
-            friendsGraph.put(i, new ArrayList<Vertex>());
+            friendsGraph.put(i, new ArrayList<>());
             visitedDict.put(i, new Vertex(i));
         }
 
 
         for (int i = 0; i < pairs; i++) {
             friendMapper = Arrays.stream(scan.nextLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            friendsGraph.get(friendMapper[0]).add(new Vertex(friendMapper[1]));
-            friendsGraph.get(friendMapper[1]).add(new Vertex(friendMapper[0]));
+            friendsGraph.get(friendMapper[0]).add(friendMapper[1]);
+            friendsGraph.get(friendMapper[1]).add(friendMapper[0]);
         }
 
 
@@ -79,12 +79,12 @@ public class Friends {
     }
 
     static void dfs(int i){
-
+		
         visitedDict.get(i).visited = true;
         sequence++;
         friendsGraph.get(i).forEach((vert) -> {
-            if(!visitedDict.get(vert.id).visited){
-                dfs(vert.id);
+            if(!visitedDict.get(vert).visited){
+                dfs(vert);
             }
         });
 
