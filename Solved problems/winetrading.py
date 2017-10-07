@@ -1,3 +1,5 @@
+"Passes all testcases, running time 220 ms"
+
 import sys
 
 lines = [line.rstrip("\n") for line in sys.stdin]

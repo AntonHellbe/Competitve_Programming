@@ -15,10 +15,10 @@ and which of them I have solved
 - [x] 10878 - Decode the tape
 - [x] 839 - Not so Mobile
 - [x] 10608 - Friends
-- [ ] 10307 - Killing Aliens in Borg Maze - (Currently attempting to solve)
+- [x] 10307 - Killing Aliens in Borg Maze
 - [x] 374 - Big Mod
-- [ ] 11054 - Wine trading in Gergovia
-- [ ] 10340 - All in All
+- [x] 11054 - Wine trading in Gergovia
+- [x] 10340 - All in All - Currently solving
 - [ ] 10943 - How do you add?
 - [ ] 116 - Unidirectional TSP
 - [ ] 185 - Roman Numerals
@@ -26,5 +26,5 @@ and which of them I have solved
 - [ ] 10078 - The Art Gallery
 - [ ] 10245 - The Closest Pair Problem
 
-Link to UVA Online where are the problems are located:
+Link to UVA Online where the problems are located:
 https://uva.onlinejudge.org/index.php
