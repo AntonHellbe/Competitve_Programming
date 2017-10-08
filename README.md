@@ -5,6 +5,8 @@
 Advanced programming is MAH course : https://edu.mah.se/sv/Course/DA405A which is so far mostly
 about time complexity and very little about programming. Lets hope that changes!
 
+Update: It has changed for the better!
+
 ##
 
 The course includes solving problems from the UVA Online Judge. Below is the list of problems
@@ -18,8 +20,8 @@ and which of them I have solved
 - [x] 10307 - Killing Aliens in Borg Maze
 - [x] 374 - Big Mod
 - [x] 11054 - Wine trading in Gergovia
-- [x] 10340 - All in All - Currently solving
-- [ ] 10943 - How do you add?
+- [x] 10340 - All in All
+- [ ] 10943 - How do you add? - Currently solving
 - [ ] 116 - Unidirectional TSP
 - [ ] 185 - Roman Numerals
 - [ ] 920 - Sunny Mountains
