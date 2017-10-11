@@ -1,6 +1,5 @@
 import sys
 import time
-directionDict = {'UPRIGHT': (1, 1), 'DOWNRIGHT':(-1, 1), 'RIGHT':(0, 1)}
 
 
 def timing(f):
@@ -14,8 +13,8 @@ def timing(f):
 
 
 def minimum_weight(best_path, col):
-    mymin = min(best_path, key = lambda item: item[col])
-    return [path for path in best_path if path[col] == mymin[col]]
+    mymin = min(best_path, key = lambda item: item[col][1])
+    return [path[::-1] for path in best_path if path[col][1] == mymin[col][1]]
 
 def go_right_down(y, x, row):
     if(y + 1 == row):
@@ -42,7 +41,7 @@ def min_path_finder(node, row, col):
 
     if col1 == col - 1:
         if len(paths[row1][col1]) == 0:
-            paths[row1][col1].append((row1, col1))
+            paths[row1][col1].append(((row1, col1), matrix[row1][col1]))
         return (matrix[row1][col1], (row1, col1))
 
 
@@ -58,7 +57,7 @@ def min_path_finder(node, row, col):
 
     savedPath = []
     savedPath.extend(paths[bestvalue[1][0]][bestvalue[1][1]])
-    savedPath.append((row1, col1))
+    savedPath.append(((row1, col1), matrix[row1][col1] + bestvalue[0]))
 
     paths[row1][col1] = savedPath
 
@@ -67,6 +66,13 @@ def min_path_finder(node, row, col):
     return (savedPositions[row1][col1], (row1, col1))
 
 
+def prettyprint(bestchoice, col):
+    for i in range(col):
+        if(i == col - 1):
+            print(bestchoice[i][0][0] + 1)
+        else:
+            print(bestchoice[i][0][0] + 1, end=" ")
+    print(bestchoice[0][1])
 
 
 
@@ -78,54 +84,74 @@ currentLine = 0
 
 while(currentLine < len(lines)):
     matrix = []
-    data = list(map(int, lines[currentLine].split(" ")))
+    data = list(map(int, lines[currentLine].split()))
     best_paths = []
     row = data[0]
     col = data[1]
+
+    print(currentLine)
+    print(row, col)
 
     paths = [[list() for j in range(col)] for i in range(row)]
 
     savedPositions = [[9999 for i in range(col)] for j in range(row)]
 
     currentLine += 1
-
     for i in range(row):
-        temp = list(map(int, lines[currentLine].split(" ")))
-        matrix.append(temp)
-        currentLine += 1
+        try:
+            temp = list(map(int, lines[currentLine].split()))
+            if not temp:
+                continue
+            if(len(temp) > col):
+                matrix.append(temp[:col])
+                matrix.append(temp[col:])
+                # currentLine += 1
+            else:
+                matrix.append(temp)
+                currentLine += 1
+        except:
+            print()
 
+
+    # print(currentLine)
+
+    # for line in matrix:
+    #     print(line)
+
+    # break
     for i in range(row):
         min_path_finder((i,0), row, col)
 
-    for i in range(len(paths)):
-        # print(paths[i][0])
-        best_paths.append(paths[i][0])
-        # print(paths[i][0])
-
-    for row in best_paths:
-        print(row)
-
-    # for i in range(row):
-    #     memoryDict[(i,0)] = matrix[i][0]
-    #     min_path_finder2((i,0), row, col)
-
-    # temp = minimum_weight(best_path, col)
+    for row in paths:
+        best_paths.append(row[0])
 
 
+    size = len(best_paths[0])  - 1
+    # for paths in best_paths:
+        # print(paths)
+    best_paths = minimum_weight(best_paths, size)
 
-    # for path in temp:
-        # print(path)
+    best = 0
+    index = 0
+    j = 0
+
+    if(len(best_paths) > 1):
+        for pathz in best_paths:
+            counter = 0
+            # print(pathz)
+            for i in range(col - 1):
+                if(pathz[i] == pathz[i + 1]):
+                    counter += 1
+                else:
+                    break
+            if counter > best:
+                index = j
+                best = counter
+            j += 1
+        # prettyprint(best_paths[index], col)
+    else:
+        print()
+        # prettyprint(best_paths[0], col)
 
 
-
-    # temp = min(best_path, key = lambda item: item[col])
-    #
-    # for j in range(len(temp) - 1):
-    #     if(j == len(temp) - 2):
-    #         print(temp[j][0] + 1)
-    #     else:
-    #         print(temp[j][0] + 1, end=" ")
-    #
-    # print(temp[len(temp) - 1])
-
-    # currentLine += 1
+    # print(best_paths[index])
