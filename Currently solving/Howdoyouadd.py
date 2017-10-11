@@ -23,6 +23,9 @@ while(True):
         for j in range(1, combinations + 1):
             filledArray[i][j] = filledArray[i -1][j] + filledArray[i][j - 1]
 
+    for row in filledArray:
+        print(row)
+
     value = filledArray[number - 1][combinations] % 1000000
     print(value)
     currentLine += 1
