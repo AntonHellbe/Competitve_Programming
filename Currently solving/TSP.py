@@ -24,10 +24,9 @@ while(currentLine < len(lines) - 1):
     col = int(data[1])
     INF = 9999
     min_weight = 99999999
-    maxPos = (row, col)
     matrix = [[0 for i in range(col)] for j in range(row)]
-    saved_weights = [[INF for i in range(col + 1)] for j in range(row)]
-    paths = [[0 for i in range(col + 1)] for j in range(row)]
+    saved_weights = [[INF for i in range(col)] for j in range(row)]
+    paths = [[0 for i in range(col)] for j in range(row)]
     input_as_list = list()
     currentLine += 1
 
@@ -59,20 +58,18 @@ while(currentLine < len(lines) - 1):
             right_down = (right_down, saved_weights[right_down[0]][right_down[1]])
             right = (right, saved_weights[right[0]][right[1]])
 
-            best_path = min([right_up, right_down, right], key=lambda item: item[1])
+            best_path = min([right_up, right_down, right], key = lambda item: item[1])
 
             saved_weights[i][j] = matrix[i][j] + saved_weights[best_path[0][0]][best_path[0][1]]
 
-    for i in range(row):
-        if(saved_weights[i][0] < min_weight):
-            min_weight = saved_weights[i][0]
 
     possibleMins = list()
     for i in range(row):
-        if saved_weights[i][0] == min_weight:
-            possibleMins.append(i)
+        if(saved_weights[i][0] < min_weight):
+            min_weight = saved_weights[i][0]
+            possibleMins.insert(0, i)
 
-    startIndex = min(possibleMins)
+    startIndex = possibleMins.pop(0)
     traverseCol = 0
     traverseRow = startIndex
     path = list()
