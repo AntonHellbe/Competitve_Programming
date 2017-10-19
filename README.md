@@ -21,12 +21,12 @@ and which of them I have solved
 - [x] 374 - Big Mod
 - [x] 11054 - Wine trading in Gergovia
 - [x] 10340 - All in All
-- [x] 10943 - How do you add? (Opt maybe needed)
-- [ ] 116 - Unidirectional TSP - Currently solving
+- [x] 10943 - How do you add?
+- [x] 116 - Unidirectional TSP
 - [ ] 185 - Roman Numerals
-- [ ] 920 - Sunny Mountains
-- [ ] 10078 - The Art Gallery
-- [ ] 10245 - The Closest Pair Problem
+- [x] 920 - Sunny Mountains
+- [x] 10078 - The Art Gallery
+- [x] 10245 - The Closest Pair Problem
 
 Link to UVA Online where the problems are located:
 https://uva.onlinejudge.org/index.php
