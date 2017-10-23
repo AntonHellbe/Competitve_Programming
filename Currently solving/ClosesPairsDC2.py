@@ -15,7 +15,7 @@ def getCorrectYvalues(x, d, s_y):
 
 def solve_bruteforce(coordinate_list):
     if(len(coordinate_list) == 1):
-        return "INFINITY"
+        return 11000
     distances = list()
     for i in range(len(coordinate_list)):
         for j in range(len(coordinate_list)):
@@ -45,11 +45,25 @@ def solveClosestPairs(s_x, s_y):
 
     mid_index = len(s_x) // 2
     x = s_x[mid_index][0]
-    points_left  = solveClosestPairs(s_x[:mid_index], s_y)
-    points_right = solveClosestPairs(s_x[mid_index:], s_y)
-    d = min(points_left, points_right)
+    Qx = s_x[:mid_index]
+    Rx = s_x[mid_index:]
+
+    Qy = list()
+    Ry = list()
+
+
+    for point in s_y:
+        if point[0] <= x:
+            Qy.append(point)
+        else:
+            Ry.append(point)
+
+    right_dist = solveClosestPairs(Rx, Ry)
+    left_dist = solveClosestPairs(Qx, Qy)
+
+    d = min(right_dist, left_dist)
+
     newStrip = getCorrectYvalues(x, d, s_y)
-    # print(s_x)
     for i in range(len(newStrip)):
         for j in range(len(newStrip)):
             if i == j:
@@ -60,7 +74,6 @@ def solveClosestPairs(s_x, s_y):
                 temp = math.sqrt(math.pow(x_d, 2) + math.pow(y_d, 2))
                 if temp < d:
                     d = temp
-    # print(d)
     return d
 
 
@@ -82,5 +95,9 @@ while(True):
         current_line += 1
 
     d = closestPair(points_list)
-    print(d)
-    # print(closestPair(points_list))
+    # print(d)
+    if d >= 10000 or d == "INFINITY":
+        print("INFINITY")
+    else:
+        d = '{:.4f}'.format(d)
+        print(d)
