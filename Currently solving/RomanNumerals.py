@@ -19,79 +19,87 @@ romanDictionary = {
     'I':1
 }
 
-def makesum_left(numeral1, numeral2):
-    totalSum = 0
-    beforeAddition = list()
-    afterAddition = list()
-    startIndex = 0
-    sumString = ""
+def arabic_encoding(character_list, leading_char, current_index, used, value, sol_no, a, b, c):
+    if sol_no > 1:
+        return sol_no
 
-    if len(numeral1) == 1:
-        totalSum += romanDictionary[numeral1[0]]
+    if(current_index == len(character_list)):
+        n1, n2, n3 = 0, 0, 0
+
+        for c in a:
+            n1 = n1 * 10 + value[ord(c)]
+        for c in b:
+            n2 = n2 * 10 + value[ord(c)]
+        for c in c:
+            n3 = n3 * 10 + value[ord(c)]
+
+        if(n1 + n2 == n3):
+            sol_no += 1
+
+        return
+
+    curren_char = leading_char[ord(character_list[current_index])]
+
+    leading_or_not_leading = 0
+    if not curren_char:
+        leading_or_not_leading = 0
     else:
-        for j in range(0, len(numeral1) - 1, 2):
-            if numeral1[j] < numeral1[j + 1]:
-                sumString = numeral1[j] + numeral1[j + 1]
-                totalSum += romanDictionary[sumString]
-            else:
-                totalSum += romanDictionary[numeral1[j]]
-                totalSum += romanDictionary[numeral1[j + 1]]
-    if len(numeral2) == 1:
-        totalSum += romanDictionary[numeral2[0]]
-    else:
-        for j in range(0, len(numeral2) - 1, 2):
-            if numeral2[j] < numeral2[j + 1]:
-                sumString = numeral2[j] + numeral2[j + 1]
-                totalSum += romanDictionary[sumString]
-            else:
-                totalSum += romanDictionary[numeral2[j]]
-                totalSum += romanDictionary[numeral2[j + 1]]
+        leading_or_not_leading = 1
+
+    for i in range(leading_or_not_leading, 10 and sol_no <= 1, 1):
+        if not used[i]:
+            value[ord(character_list[current_index])] = i
+            used[i] = True
+            solve(character_list, leading_char, current_index + 1, used, value, sol_no, a, b , c)
+            used[i] = False
 
 
-    return totalSum
 
-def makesum_right(numerals):
-    totalSum = 0
-    if(len(numerals) == 1):
-        return romanDictionary[numerals[0]]
-
-    for j in range(0, len(numerals) - 1, 2):
-        if numerals[j] < numerals[j + 1]:
-            sumString = numerals[j] + numerals[j + 1]
-            totalSum += romanDictionary[sumString]
+def roman_to_number(character_list):
+    number = 0
+    tempstr = ""
+    for i in range(len(character_list) - 1, 2):
+        if character_list[i] < character_list[i + 1]:
+            tempstr = character_list[i] + character_list[i + 1]
+            number += romanDictionary[tempstr]
         else:
-            totalSum += romanDictionary[numerals[j]]
-            totalSum += romanDictionary[numerals[j + 1]]
+            number += romanDictionary[character_list[i]]
+            number += romanDictionary[character_list[i + 1]]
 
-    return totalSum
+    return number
 
-def arabic_encoding():
-    print()
+
+
 
 
 
 lines = [line.rstrip("\n") for line in sys.stdin]
-
 currentLine = 0
 data = []
 
 
 while(True):
-
     try:
         data = re.split(r'[\+=]', lines[currentLine])
     except:
         break
+    sol_no = 0
+    first = data[0]
+    second = data[1]
+    third = data[2]
+    containsCharacters = []
+    leading_characters = [False for i in range(129)]
+    potential_encoding = [False for j in range(10)]
 
-    right_side = list(data[2])
-
-    left_value = makesum_left(data[0], data[1])
-    right_value = makesum_right(right_side)
-
-    if left_value == right_value:
-        print("Correct")
-    else:
-        print("Incorrect")
+    for character in lines[currentLine]:
+        if character not in containsCharacters and character != '=' and character != '+':
+            containsCharacters.append(character)
 
 
-    break
+
+    val = [0 for i in range(129)]
+    leading_characters[ord(first[0])] = True
+    leading_characters[ord(second[0])] = True
+    leading_characters[ord(third[0])] = True
+
+    print(arabic_encoding(containsCharacters, leading_characters, 0, potential_encoding, val, sol_no, first, second, third))
