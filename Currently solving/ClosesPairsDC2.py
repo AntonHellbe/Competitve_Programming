@@ -68,8 +68,8 @@ def solveClosestPairs(s_x, s_y):
         for j in range(len(newStrip)):
             if i == j:
                 continue
-            x_d = newStrip[i][0] - newStrip[j][0]
-            y_d = newStrip[i][1] - newStrip[j][1]
+            x_d = newStrip[j][0] - newStrip[i][0]
+            y_d = newStrip[j][1] - newStrip[i][1]
             if y_d < d:
                 temp = math.sqrt(math.pow(x_d, 2) + math.pow(y_d, 2))
                 if temp < d:
