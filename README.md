@@ -31,8 +31,8 @@ https://uva.onlinejudge.org/index.php
 ## Open kattis
 Link to my profile [Anton Hellbe](https://open.kattis.com/users/anton-hellbe)
 ### Solved Problems on Open kattis
-
-- [x] [A Feast For Cats]()
+- [x] [MinimumSpanningTree]
+- [x] [A Feast For Cats](https://github.com/AntonHellbe/Competitve_Programming/blob/master/OpenKattis/FeastForCats.java)
 - [x] [Where's my Internet](https://github.com/AntonHellbe/Competitve_Programming/blob/master/OpenKattis/WheresMyInternet.java)
 - [x] [Birthday Part](https://github.com/AntonHellbe/Competitve_Programming/blob/master/OpenKattis/BirthdayParty.java)
 - [x] [Big Truck](https://github.com/AntonHellbe/Competitve_Programming/blob/master/OpenKattis/BigTruck.java)
