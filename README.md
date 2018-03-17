@@ -32,6 +32,7 @@ https://uva.onlinejudge.org/index.php
 Link to my profile [Anton Hellbe](https://open.kattis.com/users/anton-hellbe)
 ### Solved Problems on Open kattis
 
+- [x] [A Feast For Cats]()
 - [x] [Where's my Internet](https://github.com/AntonHellbe/Competitve_Programming/blob/master/OpenKattis/WheresMyInternet.java)
 - [x] [Birthday Part](https://github.com/AntonHellbe/Competitve_Programming/blob/master/OpenKattis/BirthdayParty.java)
 - [x] [Big Truck](https://github.com/AntonHellbe/Competitve_Programming/blob/master/OpenKattis/BigTruck.java)
